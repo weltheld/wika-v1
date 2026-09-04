@@ -5031,6 +5031,15 @@ function toggleCaasMore(){
   }
   body.img-edit-mode [data-text-edit-id]:hover{ outline-color:var(--wika-main); background-color:rgba(22,72,154,.06); }
   [data-text-edit-id][contenteditable="true"]{ outline:1px dashed var(--wika-dark) !important; background-color:#fff !important; cursor:text; }
+  #img-edit-toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--wika-dark); color:#fff; font-family:'Roboto',Arial,sans-serif;
+    font-size:13.5px; font-weight:700; padding:12px 22px; border-radius:999px;
+    box-shadow:0 4px 16px rgba(0,0,0,.2); z-index:99999;
+    opacity:0; pointer-events:none; transition:opacity .2s, transform .2s;
+  }
+  #img-edit-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  #img-edit-toast.error{ background:#B3261E; }
 </style>
 <div id="img-edit-toggle" title="Bilder und Texte bearbeiten">
   <svg viewBox="0 0 24 24" fill="none" stroke="var(--wika-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
@@ -5043,6 +5052,23 @@ document.addEventListener('DOMContentLoaded', function(){
   var API_URL = '/api/overrides';
   var overrides = {};
   var textOverrides = {};
+
+  function hashStr(str){
+    var h = 5381;
+    for(var i = 0; i < str.length; i++){
+      h = ((h * 33) ^ str.charCodeAt(i)) >>> 0;
+    }
+    return h.toString(36);
+  }
+
+  function makeStableId(prefix, raw, usedIds){
+    var base = prefix + '-' + hashStr(raw);
+    var id = base;
+    var n = 2;
+    while(usedIds[id]){ id = base + '-' + n; n++; }
+    usedIds[id] = true;
+    return id;
+  }
 
   function applyOverrides(){
     imgs.forEach(function(img){
@@ -5080,6 +5106,19 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
+  // ===== Speicher-Feedback (Toast) =====
+  var toastEl = document.createElement('div');
+  toastEl.id = 'img-edit-toast';
+  document.body.appendChild(toastEl);
+  var toastTimer = null;
+  function showToast(message, isError){
+    toastEl.textContent = message;
+    toastEl.className = isError ? 'error show' : 'show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.className = ''; }, 2600);
+  }
+
+  var usedImgIds = {};
   var imgs = Array.prototype.slice.call(document.querySelectorAll('img'));
   var overlays = [];
   var currentTargetImg = null;
@@ -5092,8 +5131,8 @@ document.addEventListener('DOMContentLoaded', function(){
     overlay.style.borderRadius = getComputedStyle(img).borderRadius;
   }
 
-  imgs.forEach(function(img, i){
-    var id = 'img-' + i;
+  imgs.forEach(function(img){
+    var id = makeStableId('img', img.getAttribute('src') || img.getAttribute('data-src') || '', usedImgIds);
     img.setAttribute('data-img-edit-id', id);
 
     var parent = img.parentElement;
@@ -5129,7 +5168,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var file = e.target.files && e.target.files[0];
     if(!file || !currentTargetImg) return;
     if(file.size > MAX_IMAGE_BYTES){
-      alert('Bild ist zu groß (max. ' + Math.round(MAX_IMAGE_BYTES/1024/1024) + ' MB). Bitte ein kleineres Bild wählen.');
+      showToast('Bild ist zu groß (max. ' + Math.round(MAX_IMAGE_BYTES/1024/1024) + ' MB).', true);
       fileInput.value = '';
       return;
     }
@@ -5141,10 +5180,13 @@ document.addEventListener('DOMContentLoaded', function(){
       targetImg.src = dataUrl;
       var id = targetImg.getAttribute('data-img-edit-id');
       overrides[id] = dataUrl;
-      saveOverride('image', id, dataUrl).catch(function(){
+      showToast('Wird gespeichert …');
+      saveOverride('image', id, dataUrl).then(function(){
+        showToast('Bild gespeichert ✓');
+      }).catch(function(){
         targetImg.src = previousSrc;
         delete overrides[id];
-        alert('Bild konnte nicht dauerhaft gespeichert werden. Bitte erneut versuchen.');
+        showToast('Fehler: Bild konnte nicht gespeichert werden.', true);
       });
     };
     reader.readAsDataURL(file);
@@ -5152,9 +5194,10 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   // ===== Text-Editor: Titel & Tags in Teasern bearbeiten =====
+  var usedTextIds = {};
   var textEls = Array.prototype.slice.call(document.querySelectorAll('.draft-card .draft-badge, .draft-card .copy-s'));
-  textEls.forEach(function(el, i){
-    var id = 'text-' + i;
+  textEls.forEach(function(el){
+    var id = makeStableId('text', el.tagName + '|' + el.className + '|' + el.textContent.trim(), usedTextIds);
     el.setAttribute('data-text-edit-id', id);
 
     el.addEventListener('click', function(e){
@@ -5188,8 +5231,11 @@ document.addEventListener('DOMContentLoaded', function(){
       var text = el.textContent.trim();
       if(text === '' || text === textOverrides[id]) return;
       textOverrides[id] = text;
-      saveOverride('text', id, text).catch(function(){
-        /* Speichern fehlgeschlagen - Text bleibt lokal sichtbar, aber nicht dauerhaft */
+      showToast('Wird gespeichert …');
+      saveOverride('text', id, text).then(function(){
+        showToast('Text gespeichert ✓');
+      }).catch(function(){
+        showToast('Fehler: Text konnte nicht gespeichert werden.', true);
       });
     }
 
