@@ -1,35 +1,45 @@
 const { put, list } = require('@vercel/blob');
 
-const PATHNAME = 'wika-overrides.json';
+const PREFIX = 'overrides/';
 
-async function readStore() {
-  try {
-    const { blobs } = await list({ prefix: PATHNAME });
-    const match = blobs.find((b) => b.pathname === PATHNAME);
-    if (!match) return { images: {}, texts: {} };
-    const res = await fetch(match.url, { cache: 'no-store' });
-    if (!res.ok) return { images: {}, texts: {} };
-    const data = await res.json();
-    return { images: data.images || {}, texts: data.texts || {} };
-  } catch (e) {
-    return { images: {}, texts: {} };
-  }
+function pathFor(id) {
+  return PREFIX + encodeURIComponent(id) + '.txt';
 }
 
-async function writeStore(data) {
-  await put(PATHNAME, JSON.stringify(data), {
-    access: 'public',
-    contentType: 'application/json',
-    addRandomSuffix: false,
-    allowOverwrite: true,
-  });
+async function readAll() {
+  const data = { images: {}, texts: {} };
+  let blobs;
+  try {
+    ({ blobs } = await list({ prefix: PREFIX }));
+  } catch (e) {
+    return data;
+  }
+
+  await Promise.all(blobs.map(async (b) => {
+    const name = b.pathname.slice(PREFIX.length).replace(/\.txt$/, '');
+    const id = decodeURIComponent(name);
+    try {
+      const res = await fetch(b.url, { cache: 'no-store' });
+      if (!res.ok) return;
+      const value = await res.text();
+      if (id.indexOf('img-') === 0) {
+        data.images[id] = value;
+      } else if (id.indexOf('text-') === 0) {
+        data.texts[id] = value;
+      }
+    } catch (e) {
+      /* skip unreadable entry */
+    }
+  }));
+
+  return data;
 }
 
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
   if (req.method === 'GET') {
-    const data = await readStore();
+    const data = await readAll();
     return res.status(200).json(data);
   }
 
@@ -46,16 +56,21 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'invalid kind' });
     }
 
-    const data = await readStore();
-    const bucket = kind === 'image' ? 'images' : 'texts';
-    data[bucket][id] = value;
-
     try {
-      await writeStore(data);
+      // Each override is its own blob, so concurrent saves of different
+      // (or even the same) keys never clobber each other via a stale
+      // read-modify-write cycle - every write is independent and atomic.
+      await put(pathFor(id), value, {
+        access: 'public',
+        contentType: 'text/plain',
+        addRandomSuffix: false,
+        allowOverwrite: true,
+      });
     } catch (e) {
       return res.status(500).json({ error: 'Speichern fehlgeschlagen' });
     }
 
+    const data = await readAll();
     return res.status(200).json(data);
   }
 
