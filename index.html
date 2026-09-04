@@ -4700,22 +4700,22 @@ function toggleCaasMore(){
 
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:20px; margin-top:32px;">
       <div class="draft-card">
-        <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=400&h=240&fit=crop" style="width:100%; height:120px; object-fit:cover; border-radius:var(--r-xs); margin-bottom:10px;">
+        <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=400&h=240&fit=crop" style="width:100%; height:150px; object-fit:cover; border-radius:var(--r-xs); margin-bottom:10px;">
         <span class="draft-badge">Fachartikel</span>
         <div class="copy-s" style="font-weight:700; margin-top:6px; line-height:1.35;">Füllstandsmessung im Kernkraftwerk: zuverlässig im Störfall</div>
       </div>
       <div class="draft-card">
-        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=240&fit=crop" style="width:100%; height:120px; object-fit:cover; border-radius:var(--r-xs); margin-bottom:10px;">
+        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=240&fit=crop" style="width:100%; height:150px; object-fit:cover; border-radius:var(--r-xs); margin-bottom:10px;">
         <span class="draft-badge shop" title="Shop-verknüpft">Shop-verknüpft</span>
         <div class="copy-s" style="font-weight:700; margin-top:6px; line-height:1.35;">Abscheider im Kernkraftwerk</div>
       </div>
       <div class="draft-card">
-        <img src="https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?w=400&h=240&fit=crop" style="width:100%; height:120px; object-fit:cover; border-radius:var(--r-xs); margin-bottom:10px;">
+        <img src="https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?w=400&h=240&fit=crop" style="width:100%; height:150px; object-fit:cover; border-radius:var(--r-xs); margin-bottom:10px;">
         <span class="draft-badge">Blogbeitrag</span>
         <div class="copy-s" style="font-weight:700; margin-top:6px; line-height:1.35;">Kühlung von Rechenzentren</div>
       </div>
       <div class="draft-card">
-        <img src="https://images.unsplash.com/photo-1581093458791-9d42e3f1a24d?w=400&h=240&fit=crop" style="width:100%; height:120px; object-fit:cover; border-radius:var(--r-xs); margin-bottom:10px;">
+        <img src="https://images.unsplash.com/photo-1581093458791-9d42e3f1a24d?w=400&h=240&fit=crop" style="width:100%; height:150px; object-fit:cover; border-radius:var(--r-xs); margin-bottom:10px;">
         <span class="draft-badge case">Erfolgsgeschichten</span>
         <div class="copy-s" style="font-weight:700; margin-top:6px; line-height:1.35;">Digitales Kalibrierzertifikat (DCC)</div>
       </div>
@@ -4738,10 +4738,6 @@ function toggleCaasMore(){
   .draft-card{background:#fff; border:1px solid var(--grey-l); border-radius:var(--r-xs); padding:12px; transition:box-shadow .15s; font-family:'Roboto', Arial, sans-serif;}
   .draft-card:hover{box-shadow:0 4px 16px rgba(0,37,101,.08);}
   .draft-badge{display:inline-block; font-size:10.5px; font-weight:700; font-family:'Roboto', Arial, sans-serif; padding:3px 9px; border-radius:999px; background:var(--grey-l); color:var(--grey-d);}
-  .draft-badge.shop{background:#E8F1FF; color:var(--wika-main);}
-  .draft-badge.interaktiv{background:#FFF3D6; color:#8A5A00;}
-  .draft-badge.case{background:#E4F7EC; color:#0A7A3E;}
-  .draft-badge.video{background:#2A2A2A; color:#fff;}
   .draft-topic-pill{background:#fff; border:1px solid var(--grey-ml); border-radius:999px; padding:9px 18px; font-size:13px; font-weight:600; font-family:'Roboto', Arial, sans-serif; color:var(--wika-dark); cursor:pointer; white-space:nowrap;}
   .draft-topic-pill.active{background:var(--wika-main); color:#fff; border-color:var(--wika-main);}
   </style>
@@ -4923,11 +4919,17 @@ function toggleCaasMore(){
   body.img-edit-mode .img-edit-overlay{ display:flex; pointer-events:auto; }
   body.img-edit-mode .img-edit-overlay:hover{ opacity:1; }
   .img-edit-overlay svg{ width:26px; height:26px; }
+  body.img-edit-mode [data-text-edit-id]{
+    cursor:text; outline:1px dashed transparent; outline-offset:3px; border-radius:3px;
+    transition:outline-color .15s, background-color .15s;
+  }
+  body.img-edit-mode [data-text-edit-id]:hover{ outline-color:var(--wika-main); background-color:rgba(22,72,154,.06); }
+  [data-text-edit-id][contenteditable="true"]{ outline:1px dashed var(--wika-dark) !important; background-color:#fff !important; cursor:text; }
 </style>
-<div id="img-edit-toggle" title="Bilder bearbeiten">
+<div id="img-edit-toggle" title="Bilder und Texte bearbeiten">
   <svg viewBox="0 0 24 24" fill="none" stroke="var(--wika-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
 </div>
-<div id="img-edit-hint">Bearbeitungsmodus aktiv – klicke auf ein Bild, um es zu ersetzen. Änderungen werden in diesem Browser gespeichert.</div>
+<div id="img-edit-hint">Bearbeitungsmodus aktiv – klicke auf ein Bild, um es zu ersetzen, oder auf einen Text (z. B. Titel oder Tag), um ihn zu bearbeiten. Änderungen werden in diesem Browser gespeichert.</div>
 <input type="file" id="img-edit-file-input" accept="image/*" style="display:none;">
 
 <script>
@@ -4997,6 +4999,71 @@ function toggleCaasMore(){
     reader.readAsDataURL(file);
     fileInput.value = '';
   });
+
+  // ===== Text-Editor: Titel & Tags in Teasern bearbeiten =====
+  var TEXT_STORAGE_KEY = 'wikaProtoTextOverrides';
+  var textOverrides = {};
+  try{ textOverrides = JSON.parse(localStorage.getItem(TEXT_STORAGE_KEY) || '{}'); }catch(e){ textOverrides = {}; }
+
+  var textEls = Array.prototype.slice.call(document.querySelectorAll('.draft-card .draft-badge, .draft-card .copy-s'));
+  textEls.forEach(function(el, i){
+    var id = 'text-' + i;
+    el.setAttribute('data-text-edit-id', id);
+    if(textOverrides[id] !== undefined){ el.textContent = textOverrides[id]; }
+
+    el.addEventListener('click', function(e){
+      if(!document.body.classList.contains('img-edit-mode')) return;
+      e.preventDefault(); e.stopPropagation();
+      if(el.getAttribute('contenteditable') === 'true') return;
+      el.setAttribute('contenteditable', 'true');
+      el.focus();
+      var range = document.createRange();
+      range.selectNodeContents(el);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+
+    el.addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){ e.preventDefault(); el.blur(); }
+      if(e.key === 'Escape'){
+        e.preventDefault();
+        if(textOverrides[id] !== undefined){ el.textContent = textOverrides[id]; }
+        el.blur();
+      }
+    });
+
+    function saveText(){
+      var text = el.textContent.trim();
+      if(text === '') return;
+      textOverrides[id] = text;
+      try{ localStorage.setItem(TEXT_STORAGE_KEY, JSON.stringify(textOverrides)); }
+      catch(err){ /* Speicherlimit erreicht, Änderung gilt nur für diese Sitzung */ }
+    }
+
+    function stopEditing(){
+      el.removeAttribute('contenteditable');
+      var text = el.textContent.trim();
+      if(text === '' && textOverrides[id] !== undefined){ el.textContent = textOverrides[id]; }
+    }
+
+    el.addEventListener('input', saveText);
+    el.addEventListener('blur', function(){ saveText(); stopEditing(); });
+  });
+
+  document.addEventListener('click', function(e){
+    if(!document.body.classList.contains('img-edit-mode')) return;
+    textEls.forEach(function(el){
+      if(el.getAttribute('contenteditable') === 'true' && !el.contains(e.target)){
+        var text = el.textContent.trim();
+        if(text === '') {
+          var id = el.getAttribute('data-text-edit-id');
+          if(textOverrides[id] !== undefined){ el.textContent = textOverrides[id]; }
+        }
+        el.removeAttribute('contenteditable');
+      }
+    });
+  }, true);
 
   var toggleBtn = document.getElementById('img-edit-toggle');
   toggleBtn.addEventListener('click', function(){
