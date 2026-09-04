@@ -4354,8 +4354,12 @@ function goHomeFP(){
   window.scrollTo({top:0, behavior:'instant'});
 }
 function showView(n){
+  document.querySelectorAll('.view').forEach(function(el){ el.classList.remove('active'); });
   document.getElementById('view1').classList.toggle('active', n===1);
   document.getElementById('view5').classList.toggle('active', n===5);
+  document.getElementById('mainbtn1').classList.add('active');
+  document.getElementById('mainbtn6').classList.remove('active');
+  document.getElementById('mainbtn7').classList.remove('active');
 }
 function openArticle(){
   showView(1);
@@ -4541,6 +4545,11 @@ function resetOverlaysForNav(){
 }
 function showMainView(n){
   resetOverlaysForNav();
+  // Deactivate every top-level view unconditionally first, including ones
+  // with no switcher tab of their own (e.g. view5, the Produkte category
+  // pages) - otherwise a view left active from in-page navigation stays
+  // active forever and renders stacked underneath whatever is switched to.
+  document.querySelectorAll('.view').forEach(function(el){ el.classList.remove('active'); });
   document.getElementById('view1').classList.toggle('active', n===1);
   document.getElementById('view6').classList.toggle('active', n===6);
   document.getElementById('view7').classList.toggle('active', n===7);
