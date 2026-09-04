@@ -85,6 +85,13 @@
   .author-modal .name{font-size:16px; font-weight:700; color:var(--wika-dark); margin-bottom:2px;}
   .author-modal .role{font-size:12.5px; color:var(--grey-md); margin-bottom:18px;}
   .author-modal .quote{font-size:14px; line-height:1.65; color:var(--grey-d); font-style:italic; margin:0;}
+  .wde-floating-cta{
+    position:fixed; bottom:24px; right:24px; z-index:9000;
+    background:#00C3FF; color:#fff; font-family:'Roboto',Arial,sans-serif;
+    font-weight:700; font-size:14px; padding:14px 22px; border-radius:999px;
+    display:flex; align-items:center; gap:10px; box-shadow:0 6px 18px rgba(0,0,0,.2);
+    pointer-events:none; user-select:none;
+  }
   .fp-footer{background:var(--wika-dark); padding:32px; margin-top:0;}
   .fp-footer-inner{max-width:var(--content-max); margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
   .fp-footer.fp-footer-rich{background:#fff; padding:48px 32px 28px; border-top:1px solid var(--grey-l); font-family:'Roboto', Arial, sans-serif;}
@@ -4845,6 +4852,10 @@ function toggleCaasMore(){
       </div>
     </div>
   </div>
+  <div class="wde-floating-cta" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.35 0-2.6-.32-3.7-.9L3 21l1.9-5.7A8.46 8.46 0 0 1 3.5 11.5 8.5 8.5 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5Z"/></svg>
+    <span>Haben Sie Fragen?</span>
+  </div>
 </div>
 
 <div class="author-modal-overlay" id="authorModalOverlay" onclick="if(event.target===this) closeAuthorInfo()">
@@ -5417,6 +5428,10 @@ document.addEventListener('DOMContentLoaded', function(){
       </div>
     </div>
   </div>
+  <div class="wde-floating-cta" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.35 0-2.6-.32-3.7-.9L3 21l1.9-5.7A8.46 8.46 0 0 1 3.5 11.5 8.5 8.5 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5Z"/></svg>
+    <span>Haben Sie Fragen?</span>
+  </div>
 </div>
 
 <!-- ===== Artikeldetailseite (CaaS Migration): Abscheider im Kernkraftwerk ===== -->
@@ -5510,6 +5525,7 @@ document.addEventListener('DOMContentLoaded', function(){
               <div class="copy-s" style="font-weight:700;">Füllstandsmessung im Kernkraftwerk →</div>
             </div>
           </div>
+        </div>
       </div>
 
       <!-- Sidebar -->
@@ -5554,11 +5570,6 @@ document.addEventListener('DOMContentLoaded', function(){
               <span class="copy-xs" style="color:var(--wika-dark); font-weight:700; line-height:1.4;">Wie sind MTTF und MTBF definiert und worin liegt der Unterschied?</span>
             </a>
           </div>
-        </div>
-        <div style="background:linear-gradient(135deg,var(--wika-dark),var(--wika-main)); border-radius:var(--r-xs); padding:24px; color:#fff;">
-          <div class="copy-xs" style="font-weight:700; margin-bottom:6px;">Fragen zu diesem Thema?</div>
-          <p class="copy-xxs" style="color:rgba(255,255,255,.75); margin:0 0 16px; line-height:1.6;">Unser Vertriebsteam berät Sie gerne persönlich – schnell und unkompliziert.</p>
-          <div style="display:inline-block; background:#fff; color:var(--wika-dark); font-size:12.5px; font-weight:700; padding:10px 20px; border-radius:var(--r-xxs); cursor:pointer;">Kontakt aufnehmen</div>
         </div>
       </div>
 
@@ -5616,6 +5627,10 @@ document.addEventListener('DOMContentLoaded', function(){
         </div>
       </div>
     </div>
+  </div>
+  <div class="wde-floating-cta" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.35 0-2.6-.32-3.7-.9L3 21l1.9-5.7A8.46 8.46 0 0 1 3.5 11.5 8.5 8.5 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5Z"/></svg>
+    <span>Haben Sie Fragen?</span>
   </div>
 </div>
 
