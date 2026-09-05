@@ -5412,6 +5412,17 @@ document.addEventListener('DOMContentLoaded', function(){
       }
     });
 
+    textTarget.addEventListener('paste', function(e){
+      e.preventDefault();
+      var plain = (e.clipboardData || window.clipboardData).getData('text/plain');
+      var sel = window.getSelection();
+      if(!sel.rangeCount) return;
+      sel.deleteFromDocument();
+      sel.getRangeAt(0).insertNode(document.createTextNode(plain));
+      sel.collapseToEnd();
+      scheduleSave();
+    });
+
     var saveTimer = null;
     function scheduleSave(){
       clearTimeout(saveTimer);
