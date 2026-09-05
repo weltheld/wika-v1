@@ -7,7 +7,7 @@ function pathFor(id) {
 }
 
 async function readAll() {
-  const data = { images: {}, texts: {} };
+  const data = { images: {}, texts: {}, hidden: {} };
   let blobs;
   try {
     ({ blobs } = await list({ prefix: PREFIX }));
@@ -24,6 +24,8 @@ async function readAll() {
       const value = await res.text();
       if (id.indexOf('img-') === 0) {
         data.images[id] = value;
+      } else if (id.indexOf('hide-') === 0) {
+        data.hidden[id] = value;
       } else if (id.indexOf('text-') === 0) {
         data.texts[id] = value;
       }
@@ -52,7 +54,7 @@ module.exports = async function handler(req, res) {
     if (!kind || !id || typeof value !== 'string') {
       return res.status(400).json({ error: 'kind, id, value required' });
     }
-    if (kind !== 'image' && kind !== 'text') {
+    if (kind !== 'image' && kind !== 'text' && kind !== 'hidden') {
       return res.status(400).json({ error: 'invalid kind' });
     }
 
